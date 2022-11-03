@@ -1,4 +1,5 @@
-CMPE322 Project1 
+# MyShell
+
 
 This project is an implementation of a shell. Core implementation has been made with c++. 
 
@@ -18,4 +19,3 @@ printfile (fileName) > (newFileName) -> copies the contained string to another f
 dididothat -> checks whether user used this command or not in his/her last 15 commands. E.G.: dididothat "printfile"
 hellotext -> opens gedit text editor for user to write.
 exit -> exits the shell.
-# MyShell
