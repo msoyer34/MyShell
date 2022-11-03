@@ -14,6 +14,8 @@
 #include "dirent.h"
 #include <paths.h>
 #include <vector>
+#include <string>
+#include <array>
 
 class operationsservice{
     public:
@@ -25,6 +27,9 @@ class operationsservice{
          void listFilesInDirectory();
          void printFileToTerminal(std::string filepath);
          void copyFileToLocation(std::string incoming_filepath, std::string out_filepath);
+         void setInputToHistory(std::vector<std::string> inputs);
+         void checkInputExists(std::vector<std::string> inputs);
+         void getInputHistory();
          
     private:
         char host[256];
@@ -34,4 +39,6 @@ class operationsservice{
         bool checkHostEntry(struct hostent * hostentry);
         bool formatIP(char *IPbuffer);
         bool checkHostName(int hostname);
+        std::array<std::vector<std::string>, 15> holded_inputs_ = {};
+        int input_counter_{0};
 };

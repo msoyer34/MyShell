@@ -1,5 +1,5 @@
-#include "operationsservice.h"
 #include "inputcontroller.h"
+#include "commands.h"
 
 /*
     Main Shell implementation. Get Arguments and make operations.
@@ -8,58 +8,25 @@ int main(int argc, char** argv)
 {
     std::shared_ptr<inputcontroller> input_controller = std::make_shared<inputcontroller>();
     std::shared_ptr<operationsservice> operations_service = std::make_shared<operationsservice>();
+    std::shared_ptr<CommandInitializer> initializer = std::make_shared<CommandInitializer>();
     //gets user name to set to the shell username.
     auto pc_user_name = std::getenv("USER");
     std::cout << "!----- Hello,  Welcome " << pc_user_name  << " To The Shell -----!" << std::endl;
-    auto inputs = input_controller->getInputAsVector(pc_user_name);
-    
+    auto operations = initializer->getOperations();
     //Make Operations unless input is exit.
-    while (inputs.front() != "exit")
+    do
     {
-        if(inputs.front() == "listdir")
-        {   
-            operations_service->listFilesInDirectory();
-        }
-        else if(inputs.front() == "mycomputername")
-        {
-            std::cout << "Computer name is: " << operations_service->returnHostName() << std::endl;
+        try{
+            auto inputs = input_controller->getInputAsVector(pc_user_name);
+            ICommand* operation = operations.at(inputs.front()); //throws exception if command is not defined.
+            operation->Execute(operations_service, inputs);
 
         }
-        else if(inputs.front() == "whatismyip")
+        catch(std::out_of_range ex)
         {
-            std::cout << operations_service->returnIPOfMachine() << std::endl;
-            
+            std::cout << "Command is not defined" << std::endl;
         }
-        else if(inputs.front() == "printfile")
-        {
-            if(inputs.size() == 2){     
-                operations_service->printFileToTerminal(inputs[1]); 
-            }
-            else if(inputs.size() == 4)
-            {
-                operations_service->copyFileToLocation(inputs[1], inputs[3]);
-            }
-            else
-            {
-                std::cout << "wrong input" << std::endl;
-            }
-        }
-        else if(inputs.front() == "hellotext")
-        {
-            if(!fork())
-            {
-                system("gedit");
-            }
-        }
-        else if(inputs.front() == "dididothat")
-        {
-            cout << input_controller->checkInputExists(inputs) << endl;
-        }
-        else{
-            std::cout << "wrong input" << std::endl;
-        }
-        inputs = input_controller->getInputAsVector(pc_user_name);
-    } 
-    std::cout << "Good Bye" << std::endl;
-    return 0;
+
+    }
+    while(true);
 }
